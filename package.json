@@ -1,0 +1,14 @@
+{
+  "name": "npmify",
+  "version": "0.0.1",
+  "description": "Get projects ready for publishing to NPM",
+  "main": "index.js",
+  "repository": "https://github.com/hguiney/npmify.git",
+  "author": "Hugh Guiney",
+  "license": "BlueOak-1.0.0",
+  "private": false,
+  "dependencies": {
+    "recursive-copy": "^2.0.10",
+    "rimraf": "^2.6.3"
+  }
+}
