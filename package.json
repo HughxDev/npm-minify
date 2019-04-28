@@ -1,14 +1,23 @@
 {
-  "name": "npmify",
+  "name": "npm-minify",
   "version": "0.0.1",
-  "description": "Get projects ready for publishing to NPM",
+  "description": "Minify your packages ahead of `npm publish` to reduce dependency bloat for your users.",
   "main": "index.js",
   "repository": "https://github.com/hguiney/npmify.git",
   "author": "Hugh Guiney",
   "license": "BlueOak-1.0.0",
   "private": false,
   "dependencies": {
+    "make-dir": "^3.0.0",
     "recursive-copy": "^2.0.10",
     "rimraf": "^2.6.3"
-  }
+  },
+  "bin": "./index.js",
+  "keywords": [
+    "npm",
+    "cli",
+    "minify",
+    "build",
+    "publish"
+  ]
 }
