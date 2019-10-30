@@ -59,6 +59,3 @@ If you specify no `filter`, then it defaults to copying over all `.js` files, wh
 - `.test.js` files
 - `.npm-minify.js`
 - `jest.config.js`
-
-## Credits
-- Social preview photo by [Sergiu Nista](https://unsplash.com/photos/tCCW6JshK6M?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
