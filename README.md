@@ -1,5 +1,10 @@
-# npm-minify
-Minify your packages ahead of `npm publish` to reduce dependency bloat for your users.
+<p align="center"><img src="https://raw.githubusercontent.com/hguiney/npm-minify/master/npm-minify.svg?sanitize=true" width="150" alt="logo" /></p>
+
+<h1 align="center">npm-minify</h1>
+
+<p align="center">Minify your packages ahead of <code>npm publish</code> to reduce dependency bloat for your users.</p>
+
+<p align="center"><a href="https://www.npmjs.com/package/npm-minify"><img src="https://img.shields.io/npm/dm/npm-minify.svg" alt="Downloads per month (NPM)" /></a></p>
 
 ## Installation
 - `npm install --global npm-minify`
