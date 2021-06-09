@@ -94,7 +94,8 @@ fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
 
     bareRepo = repo
       .replace( /^(git\+https|git|https):\/\//i, '' )
-      .replace( /\.git$/i, '' );
+      .replace( /\.git$/i, '' )
+      .replace( /git@github\.com:/, 'github.com/' )
 
     if ( /github\.com/i.test( bareRepo ) ) {
       repoHost = 'GitHub';
