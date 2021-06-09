@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/hguiney/npm-minify/master/npm-minify.svg?sanitize=true" width="150" alt="logo" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/HughxDev/npm-minify/master/npm-minify.svg?sanitize=true" width="150" alt="logo" /></p>
 
 <h1 align="center">npm-minify</h1>
 

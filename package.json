@@ -1,9 +1,9 @@
 {
   "name": "npm-minify",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Minify your packages ahead of `npm publish` to reduce dependency bloat for your users.",
   "main": "index.js",
-  "repository": "https://github.com/hguiney/npmify.git",
+  "repository": "https://github.com/HughxDev/npm-minify.git",
   "author": "Hugh Guiney",
   "license": "BlueOak-1.0.0",
   "private": false,
