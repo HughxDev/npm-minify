@@ -33,7 +33,7 @@ module.exports = {
     "!node_modules/**",
     "!coverage/**",
     "!dev.js",
-    "!npmify.js",
+    "!.npm-minify.js",
   ]
 };
 ```
@@ -48,7 +48,7 @@ npm publish
 
 Alternatively, you can specify the filter list as a comma-separated command-line argument:
 ```shell
-npm-minify --filter '**/*.js,rng/hvml.rng,!**/*.test.js,!jest.config.js,!node_modules/**,!coverage/**,!dev.js,!npmify.js'
+npm-minify --filter '**/*.js,rng/hvml.rng,!**/*.test.js,!jest.config.js,!node_modules/**,!coverage/**,!dev.js,!.npm-minify.js'
 ```
 If you specify `filter` in both `.npmminify.js` and as a command-line argument, npm-minify will combine the two.
 
