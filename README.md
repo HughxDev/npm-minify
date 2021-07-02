@@ -22,7 +22,7 @@ Npm-minify is non-destructive except for the `dist` directory.
 Minification of JavaScript or other assets. As package authors, we should assume that end users have their own build process and not publish pre-minified assets.
 
 ## Usage
-First, add a `.npmminify.js` file to the root of your project, specifying which files should be copied (or not copied) to `dist` using a glob syntax. For example:
+First, add a `.npm-minify.js` file to the root of your project, specifying which files should be copied (or not copied) to `dist` using a glob syntax. For example:
 ```js
 module.exports = {
   "filter": [
@@ -50,7 +50,7 @@ Alternatively, you can specify the filter list as a comma-separated command-line
 ```shell
 npm-minify --filter '**/*.js,rng/hvml.rng,!**/*.test.js,!jest.config.js,!node_modules/**,!coverage/**,!dev.js,!.npm-minify.js'
 ```
-If you specify `filter` in both `.npmminify.js` and as a command-line argument, npm-minify will combine the two.
+If you specify `filter` in both `.npm-minify.js` and as a command-line argument, npm-minify will combine the two.
 
 If you specify no `filter`, then it defaults to copying over all `.js` files, while ignoring:
 - `node_modules/`
