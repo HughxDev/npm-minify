@@ -1,6 +1,6 @@
 {
   "name": "npm-minify",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Minify your packages ahead of `npm publish` to reduce dependency bloat for your users.",
   "main": "index.js",
   "repository": "https://github.com/HughxDev/npm-minify.git",
