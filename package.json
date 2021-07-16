@@ -8,9 +8,9 @@
   "license": "BlueOak-1.0.0",
   "private": false,
   "dependencies": {
-    "make-dir": "^3.0.0",
-    "recursive-copy": "^2.0.10",
-    "rimraf": "^2.6.3"
+    "make-dir": "latest",
+    "recursive-copy": "latest",
+    "rimraf": "latest"
   },
   "bin": "./index.js",
   "keywords": [
