@@ -59,3 +59,4 @@ If you specify no `filter`, then it defaults to copying over all `.js` files, wh
 - `.test.js` files
 - `.npm-minify.js`
 - `jest.config.js`
+- `.eslintrc.js` files and their variants

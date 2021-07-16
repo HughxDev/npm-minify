@@ -7,10 +7,34 @@ const makeDir = require('make-dir');
 
 const [,, ...args] = process.argv;
 
+let verbose = false;
+let verboseIndex = args.indexOf( '--verbose' );
+
+if ( verboseIndex === -1 ) {
+  verboseIndex = args.indexOf( '-v' );
+}
+
+if ( verboseIndex !== -1 ) {
+  verbose = true;
+}
+
+if ( verbose ) {
+  console.log( `Verbose logging active.\n` );
+}
+
 let config = {};
 try {
   config = require( `${process.cwd()}/.npm-minify.js` );
-} catch ( missingConfigError ) {}
+
+  if ( verbose ) {
+    console.log( `Project-level config found @ ${process.cwd()}/.npm-minify.js:` );
+    console.log( `${JSON.stringify( config, null, 2 )}\n` );
+  }
+} catch ( missingConfigError ) {
+  if ( verbose ) {
+    console.log( `Project-level config not found @ ${process.cwd()}/.npm-minify.js.\n` );
+  }
+}
 
 let filter;
 let filterIndex = args.indexOf( '--filter' );
@@ -34,12 +58,22 @@ if ( !config.filter ) {
   config.filter = [
     '**/*.js',
     '!**/*.test.js',
+    '!.eslintrc.js',
+    '!.eslintrc.cjs',
+    '!.eslintrc.json',
+    '!.eslintrc.yaml',
+    '!.eslintrc.yml',
     '!.npm-minify.js',
     '!jest.config.js',
     '!node_modules/**',
     '!coverage/**',
     '!test/**',
   ];
+}
+
+if ( verbose ) {
+  console.log( `Compiled config:` );
+  console.log( `${JSON.stringify( config, null, 2 )}\n` );
 }
 
 let bareRepo = '';
@@ -71,12 +105,25 @@ function readmeReadCallback( readme ) {
         console.error( readmeWriteError.message );
         process.exit( 1 );
       }
+
+      if ( verbose ) {
+        console.log( `Wrote README to ${process.cwd()}/dist/${readmeFilename}.\n` );
+      }
     }
   );
 }
 
-rimraf.sync( './dist/*' );
-// fs.rmdirSync( './dist/' );
+try {
+  rimraf.sync( './dist/*' );
+  // fs.rmdirSync( './dist/' );
+
+  if ( verbose ) {
+    console.log( `Deleted ${process.cwd()}/dist/*.\n` );
+  }
+} catch ( deletionError ) {
+  console.error( deletionError );
+  process.exit( 1 );
+}
 
 fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
   if ( readError ) {
@@ -109,12 +156,26 @@ fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
     // null, 2
   );
 
-  makeDir.sync( './dist/' );
+  try {
+    makeDir.sync( './dist/' );
+
+    if ( verbose ) {
+      console.log( `Recreated ${process.cwd()}/dist/.\n` );
+    }
+  } catch ( creationError ) {
+    console.error( creationError );
+    process.exit( 1 );
+  }
 
   fs.writeFile( './dist/package.json', slimPackageJson, 'utf8', ( writeError ) => {
     if ( writeError ) {
       console.error( writeError.message );
       process.exit( 1 );
+    }
+
+    if ( verbose ) {
+      console.log( `Wrote slim package.json to ${process.cwd()}/dist/package.json:` );
+      console.log( `${slimPackageJson}\n` );
     }
   } );
 
@@ -135,7 +196,17 @@ fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
     }
   } // for
 
-  copy( '.', 'dist', {
-    "filter": config.filter,
-  } );
+  copy(
+    '.',
+    'dist',
+    {
+      "filter": config.filter,
+    }
+  )
+  .then( ( results ) => {
+    if ( verbose ) {
+  		console.log( `${results.length} file(s) copied to ${process.cwd()}/dist/:` );
+      console.log( `- ${results.map( ( result ) => `${result.src}` ).join( `\n- ` )}` );
+    }
+	} )
 } );
