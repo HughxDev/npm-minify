@@ -200,7 +200,9 @@ fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
     '.',
     'dist',
     {
+      "overwrite": true,
       "filter": config.filter,
+      "dot": true,
     }
   )
   .then( ( results ) => {
