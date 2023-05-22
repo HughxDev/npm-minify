@@ -2,7 +2,7 @@
 const fs = require( 'fs' );
 const process = require( 'process' );
 const copy = require( 'recursive-copy' ); // eslint-disable-line import/no-extraneous-dependencies
-const rimraf = require( 'rimraf' ); // eslint-disable-line import/no-extraneous-dependencies
+const { rimraf } = require( 'rimraf' ); // eslint-disable-line import/no-extraneous-dependencies
 const makeDir = require('make-dir');
 
 const [,, ...args] = process.argv;
@@ -47,10 +47,7 @@ if ( filterIndex !== -1 ) {
   filter = args[++filterIndex];
 
   if ( filter && filter.length ) {
-    config.filter = [
-      ...config.filter,
-      ...filter.split( ',' )
-    ];
+    config.filter.push( ...filter.split( ',' ) );
   }
 }
 
@@ -69,6 +66,44 @@ if ( !config.filter ) {
     '!coverage/**',
     '!test/**',
   ];
+}
+
+let inDir = '.';
+let inDirIndex = args.indexOf( '--in' );
+
+if ( inDirIndex === -1 ) {
+  inDirIndex = args.indexOf( '-i' );
+}
+
+if ( inDirIndex !== -1 ) {
+  inDir = args[++inDirIndex];
+}
+
+if ( inDir !== '.' ) {
+  while ( inDir[inDir.length - 1] === '/' ) {
+    inDir = inDir.slice( 0, -1 );
+  }
+
+  config.filter.push( `!${inDir}/**` );
+}
+
+let outDir = 'dist';
+let outDirIndex = args.indexOf( '--out' );
+
+if ( outDirIndex === -1 ) {
+  outDirIndex = args.indexOf( '-o' );
+}
+
+if ( outDirIndex !== -1 ) {
+  outDir = args[++outDirIndex];
+}
+
+if ( outDir !== 'dist' ) {
+  while ( outDir[outDir.length - 1] === '/' ) {
+    outDir = outDir.slice( 0, -1 );
+  }
+
+  config.filter.push( `!${outDir}/**` );
 }
 
 if ( verbose ) {
@@ -97,7 +132,7 @@ function readmeReadCallback( readme ) {
   }
 
   fs.writeFile(
-    `./dist/${readmeFilename}`,
+    `${outDir}/${readmeFilename}`,
     ( slimReadme || readme ),
     'utf8',
     ( readmeWriteError ) => {
@@ -107,25 +142,26 @@ function readmeReadCallback( readme ) {
       }
 
       if ( verbose ) {
-        console.log( `Wrote README to ${process.cwd()}/dist/${readmeFilename}.\n` );
+        console.log( `Wrote README to ${outDir}/${readmeFilename}.\n` );
       }
     }
   );
 }
 
-try {
-  rimraf.sync( './dist/*' );
-  // fs.rmdirSync( './dist/' );
+(async function removeDist() {
+  try {
+    await rimraf.native( `${outDir}/*`, { glob: true } );
 
-  if ( verbose ) {
-    console.log( `Deleted ${process.cwd()}/dist/*.\n` );
+    if ( verbose ) {
+      console.log( `Deleted ${outDir}/*.\n` );
+    }
+  } catch ( deletionError ) {
+    console.error( deletionError );
+    process.exit( 1 );
   }
-} catch ( deletionError ) {
-  console.error( deletionError );
-  process.exit( 1 );
-}
+})();
 
-fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
+fs.readFile( `${inDir}/package.json`, 'utf8', ( readError, packageJson ) => {
   if ( readError ) {
     console.error( readError.message );
     process.exit( 1 );
@@ -157,24 +193,24 @@ fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
   );
 
   try {
-    makeDir.sync( './dist/' );
+    makeDir.sync( outDir );
 
     if ( verbose ) {
-      console.log( `Recreated ${process.cwd()}/dist/.\n` );
+      console.log( `Recreated ${outDir}/.\n` );
     }
   } catch ( creationError ) {
     console.error( creationError );
     process.exit( 1 );
   }
 
-  fs.writeFile( './dist/package.json', slimPackageJson, 'utf8', ( writeError ) => {
+  fs.writeFile( `${outDir}/package.json`, slimPackageJson, 'utf8', ( writeError ) => {
     if ( writeError ) {
       console.error( writeError.message );
       process.exit( 1 );
     }
 
     if ( verbose ) {
-      console.log( `Wrote slim package.json to ${process.cwd()}/dist/package.json:` );
+      console.log( `Wrote slim package.json to ${outDir}/package.json:` );
       console.log( `${slimPackageJson}\n` );
     }
   } );
@@ -185,7 +221,7 @@ fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
 
     try {
       readmeFilename = readmeFilenames[i];
-      readmeContents = fs.readFileSync( `./${readmeFilename}`, { "encoding": "utf8" } );
+      readmeContents = fs.readFileSync( `${inDir}/${readmeFilename}`, { "encoding": "utf8" } );
     } catch ( readError ) {
       forwardedError = readError;
     }
@@ -196,9 +232,10 @@ fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
     }
   } // for
 
+  // @ts-ignore - Bad type
   copy(
-    '.',
-    'dist',
+    inDir,
+    outDir,
     {
       "overwrite": true,
       "filter": config.filter,
@@ -207,8 +244,12 @@ fs.readFile( './package.json', 'utf8', ( readError, packageJson ) => {
   )
   .then( ( results ) => {
     if ( verbose ) {
-  		console.log( `${results.length} file(s) copied to ${process.cwd()}/dist/:` );
+  		console.log( `${results.length} file(s) copied to ${outDir}/:` );
       console.log( `- ${results.map( ( result ) => `${result.src}` ).join( `\n- ` )}` );
     }
 	} )
+  .catch( ( error ) => {
+    console.error( error );
+    process.exit( 1 );
+  } )
 } );

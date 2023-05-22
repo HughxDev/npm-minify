@@ -60,3 +60,12 @@ If you specify no `filter`, then it defaults to copying over all `.js` files, wh
 - `.npm-minify.js`
 - `jest.config.js`
 - `.eslintrc.js` files and their variants
+
+### Flags
+
+| Flag        | Shorthand | Description                                                                       |
+| ----------- | --------- | --------------------------------------------------------------------------------- |
+| `--verbose` | `-v`      | Turn on verbose console logging                                                   |
+| `--filter`  | `-f`      | Specify comma-separated list of files to include/exclude. Supports glob patterns. |
+| `--in`      | `-i`      | Specify minification source directory.                                            |
+| `--out`     | `-o`      | Specify minifcation destination directory.                                        |

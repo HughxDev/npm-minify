@@ -62,3 +62,6 @@ typings/
 
 # Repo-specific
 dist/
+
+# macOS
+.DS_Store
