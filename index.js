@@ -2,7 +2,6 @@
 const fs = require( 'fs' );
 const process = require( 'process' );
 const copy = require( 'recursive-copy' ); // eslint-disable-line import/no-extraneous-dependencies
-const { rimraf } = require( 'rimraf' ); // eslint-disable-line import/no-extraneous-dependencies
 const makeDir = require('make-dir');
 
 const [,, ...args] = process.argv;
@@ -102,8 +101,6 @@ if ( outDir !== 'dist' ) {
   while ( outDir[outDir.length - 1] === '/' ) {
     outDir = outDir.slice( 0, -1 );
   }
-
-  config.filter.push( `!${outDir}/**` );
 }
 
 if ( verbose ) {
@@ -148,18 +145,16 @@ function readmeReadCallback( readme ) {
   );
 }
 
-(async function removeDist() {
-  try {
-    await rimraf.native( `${outDir}/*`, { glob: true } );
+try {
+  fs.rmSync( `${outDir}`, { recursive: true, force: true } );
 
-    if ( verbose ) {
-      console.log( `Deleted ${outDir}/*.\n` );
-    }
-  } catch ( deletionError ) {
-    console.error( deletionError );
-    process.exit( 1 );
+  if ( verbose ) {
+    console.log( `Deleted ${outDir}/*.\n` );
   }
-})();
+} catch ( deletionError ) {
+  console.error( deletionError );
+  process.exit( 1 );
+}
 
 fs.readFile( `${inDir}/package.json`, 'utf8', ( readError, packageJson ) => {
   if ( readError ) {
@@ -232,15 +227,17 @@ fs.readFile( `${inDir}/package.json`, 'utf8', ( readError, packageJson ) => {
     }
   } // for
 
+  const copyOptions = {
+    "overwrite": true,
+    "filter": config.filter,
+    "dot": true,
+  };
+
   // @ts-ignore - Bad type
   copy(
     inDir,
     outDir,
-    {
-      "overwrite": true,
-      "filter": config.filter,
-      "dot": true,
-    }
+    copyOptions
   )
   .then( ( results ) => {
     if ( verbose ) {

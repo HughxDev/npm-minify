@@ -9,8 +9,7 @@
   "private": false,
   "dependencies": {
     "make-dir": "latest",
-    "recursive-copy": "latest",
-    "rimraf": "latest"
+    "recursive-copy": "latest"
   },
   "bin": "./index.js",
   "keywords": [
